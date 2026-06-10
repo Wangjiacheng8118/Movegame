@@ -45,6 +45,40 @@ export class GameView {
     this.blockRenderer = new BlockRenderer();
     this.scene.add(this.blockRenderer.group);
 
+    // 鼠标滚轮缩放（PC）
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      this.camera.zoom(e.deltaY > 0 ? 0.1 : -0.1);
+    }, { passive: false });
+
+    // 双指捏合缩放（移动端）
+    let lastPinchDist = 0;
+    container.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        lastPinchDist = Math.hypot(dx, dy);
+      }
+    }, { passive: true });
+
+    container.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        if (lastPinchDist > 0) {
+          const delta = (dist - lastPinchDist) * 0.005;
+          this.camera.zoom(-delta);
+        }
+        lastPinchDist = dist;
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchend', () => {
+      lastPinchDist = 0;
+    }, { passive: true });
+
     // 窗口大小调整
     window.addEventListener('resize', () => {
       const w = container.clientWidth;
@@ -63,6 +97,7 @@ export class GameView {
     this.scene.add(this.gridRenderer.group);
     // 调整摄像机
     this.camera.adjustToGrid(level.width, level.height);
+    this.camera.resetZoom();
   }
 
   /** 渲染循环 */

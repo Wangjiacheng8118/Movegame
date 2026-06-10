@@ -12,27 +12,27 @@ export class HUD {
     container.innerHTML = '';
 
     this.levelNameEl = document.createElement('div');
-    this.levelNameEl.style.fontSize = '20px';
-    this.levelNameEl.style.fontWeight = 'bold';
+    this.levelNameEl.className = 'hud-level';
     this.levelNameEl.textContent = '';
 
     this.moveCountEl = document.createElement('div');
+    this.moveCountEl.className = 'hud-steps';
     this.moveCountEl.textContent = '步数: 0';
 
     const btnRow = document.createElement('div');
-    btnRow.style.marginTop = '8px';
+    btnRow.className = 'hud-btn-row';
 
     this.resetBtn = document.createElement('button');
-    this.resetBtn.textContent = '重置';
+    this.resetBtn.className = 'hud-btn hud-btn-reset';
+    this.resetBtn.textContent = '↺ 重置';
     this.resetBtn.addEventListener('click', () => {
       if (this.onReset) this.onReset();
     });
 
     this.nextBtn = document.createElement('button');
+    this.nextBtn.className = 'hud-btn hud-btn-next';
     this.nextBtn.textContent = '下一关 →';
     this.nextBtn.style.display = 'none';
-    this.nextBtn.style.marginLeft = '8px';
-    this.nextBtn.style.background = '#44aa44';
     this.nextBtn.addEventListener('click', () => {
       if (this.onNextLevel) this.onNextLevel();
     });
@@ -41,11 +41,7 @@ export class HUD {
     btnRow.appendChild(this.nextBtn);
 
     this.winEl = document.createElement('div');
-    this.winEl.style.display = 'none';
-    this.winEl.style.fontSize = '24px';
-    this.winEl.style.fontWeight = 'bold';
-    this.winEl.style.color = '#ffdd44';
-    this.winEl.style.marginTop = '8px';
+    this.winEl.className = 'hud-win';
     this.winEl.textContent = '🎉 通关！';
 
     container.appendChild(this.levelNameEl);

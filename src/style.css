@@ -9,8 +9,8 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: #1a1a2e;
-  font-family: 'Segoe UI', sans-serif;
-  touch-action: none; /* 阻止浏览器默认手势 */
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  touch-action: none;
 }
 
 #app {
@@ -18,44 +18,83 @@ html, body {
   height: 100%;
 }
 
+/* === HUD === */
 #hud {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 12px;
+  left: 12px;
   color: #eee;
-  font-size: 18px;
   pointer-events: none;
   user-select: none;
   z-index: 10;
 }
 
-#hud button {
-  pointer-events: auto;
-  margin-top: 8px;
-  padding: 6px 16px;
+.hud-level {
   font-size: 16px;
+  font-weight: bold;
+  color: #88bbff;
+  margin-bottom: 4px;
+}
+
+.hud-steps {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.hud-btn-row {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.hud-btn {
+  pointer-events: auto;
+  padding: 8px 14px;
+  font-size: 14px;
   border: none;
-  border-radius: 6px;
-  background: #3388dd;
+  border-radius: 8px;
   color: #fff;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
 }
 
-#hud button:hover {
-  background: #2266bb;
+.hud-btn-reset {
+  background: rgba(255, 255, 255, 0.18);
 }
 
-/* 虚拟方向键 */
+.hud-btn-reset:active {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.hud-btn-next {
+  background: #44aa44;
+}
+
+.hud-btn-next:active {
+  background: #338833;
+}
+
+.hud-win {
+  display: none;
+  margin-top: 10px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffdd44;
+}
+
+/* === 虚拟方向键 === */
 .dpad {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 150px;
-  height: 150px;
+  bottom: 20px;
+  left: 20px;
+  width: 140px;
+  height: 140px;
   z-index: 100;
   display: grid;
-  grid-template-columns: 50px 50px 50px;
-  grid-template-rows: 50px 50px 50px;
+  grid-template-columns: 46px 46px 46px;
+  grid-template-rows: 46px 46px 46px;
   grid-template-areas:
     ". up ."
     "left . right"
@@ -64,13 +103,13 @@ html, body {
 }
 
 .dpad-btn {
-  width: 50px;
-  height: 50px;
+  width: 46px;
+  height: 46px;
   border: none;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 22px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -78,10 +117,11 @@ html, body {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   touch-action: manipulation;
+  transition: background 0.1s, color 0.1s;
 }
 
 .dpad-btn:active {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.3);
   color: #fff;
 }
 
@@ -90,7 +130,7 @@ html, body {
 .dpad-right { grid-area: right; }
 .dpad-down  { grid-area: down; }
 
-/* 非触屏设备隐藏虚拟方向键 */
+/* PC 上隐藏虚拟方向键 */
 @media (hover: hover) and (pointer: fine) {
   .dpad { display: none; }
 }
