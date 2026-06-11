@@ -84,7 +84,7 @@ html, body {
   color: #ffdd44;
 }
 
-/* === 虚拟方向键 === */
+/* === 虚拟方向键（菱形布局，对齐等距视角） === */
 .dpad {
   position: fixed;
   bottom: 20px;
@@ -96,10 +96,11 @@ html, body {
   grid-template-columns: 46px 46px 46px;
   grid-template-rows: 46px 46px 46px;
   grid-template-areas:
-    ". up ."
-    "left . right"
-    ". down .";
+    ".    north ."
+    "west .    east"
+    ".    south .";
   pointer-events: auto;
+  transform: rotate(45deg);
 }
 
 .dpad-btn {
@@ -118,6 +119,7 @@ html, body {
   user-select: none;
   touch-action: manipulation;
   transition: background 0.1s, color 0.1s;
+  transform: rotate(-45deg);
 }
 
 .dpad-btn:active {
@@ -125,10 +127,10 @@ html, body {
   color: #fff;
 }
 
-.dpad-up    { grid-area: up; }
-.dpad-left  { grid-area: left; }
-.dpad-right { grid-area: right; }
-.dpad-down  { grid-area: down; }
+.dpad-north { grid-area: north; }
+.dpad-west  { grid-area: west; }
+.dpad-east  { grid-area: east; }
+.dpad-south { grid-area: south; }
 
 /* PC 上隐藏虚拟方向键 */
 @media (hover: hover) and (pointer: fine) {
