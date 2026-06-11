@@ -7,6 +7,7 @@ export class HUD {
   private winEl: HTMLElement;
   private onReset: (() => void) | null = null;
   private onNextLevel: (() => void) | null = null;
+  private onSelectLevel: (() => void) | null = null;
 
   constructor(container: HTMLElement) {
     container.innerHTML = '';
@@ -37,7 +38,15 @@ export class HUD {
       if (this.onNextLevel) this.onNextLevel();
     });
 
+    const selectBtn = document.createElement('button');
+    selectBtn.className = 'hud-btn hud-btn-select';
+    selectBtn.textContent = '☰ 选关';
+    selectBtn.addEventListener('click', () => {
+      if (this.onSelectLevel) this.onSelectLevel();
+    });
+
     btnRow.appendChild(this.resetBtn);
+    btnRow.appendChild(selectBtn);
     btnRow.appendChild(this.nextBtn);
 
     this.winEl = document.createElement('div');
@@ -80,5 +89,10 @@ export class HUD {
   /** 设置下一关回调 */
   setNextLevelCallback(cb: () => void): void {
     this.onNextLevel = cb;
+  }
+
+  /** 设置选关回调 */
+  setSelectLevelCallback(cb: () => void): void {
+    this.onSelectLevel = cb;
   }
 }

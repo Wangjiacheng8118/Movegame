@@ -3,6 +3,7 @@ import { GameEngine } from './core/GameEngine';
 import { GameView } from './render/GameView';
 import { InputManager } from './input/InputManager';
 import { HUD } from './ui/HUD';
+import { LevelSelect } from './ui/LevelSelect';
 import { LEVELS } from './data/levels';
 import { Direction, BlockState, TransitionResult, LevelData } from './core/types';
 
@@ -14,9 +15,8 @@ let currentLevelIndex = 0;
 
 // HUD
 const hud = new HUD(hudEl);
-hud.setLevelName(`第${currentLevelIndex + 1}关 — ${LEVELS[currentLevelIndex].name}`);
 
-// 游戏引擎
+// 游戏引擎（初始加载第1关，但被选关界面覆盖）
 const engine = new GameEngine(LEVELS[currentLevelIndex], {
   onBlockMove(prev: BlockState, next: BlockState, result: TransitionResult, dir: Direction) {
     hud.updateMoveCount(engine.moveCount);
@@ -69,6 +69,17 @@ new InputManager(appEl, (dir: Direction) => {
   engine.tryMove(dir);
 });
 
+// 关卡选择界面
+const levelSelect = new LevelSelect(LEVELS, (index: number) => {
+  currentLevelIndex = index;
+  engine.loadLevel(LEVELS[index]);
+  hud.setLevelName(`第${index + 1}关 — ${LEVELS[index].name}`);
+  gameView.snapToState(engine.block.state);
+});
+
+// 游戏启动时显示关卡选择
+levelSelect.show();
+
 // 重置
 hud.setResetCallback(() => engine.reset());
 
@@ -78,4 +89,9 @@ hud.setNextLevelCallback(() => {
     currentLevelIndex++;
     engine.loadLevel(LEVELS[currentLevelIndex]);
   }
+});
+
+// 返回选关
+hud.setSelectLevelCallback(() => {
+  levelSelect.show();
 });
