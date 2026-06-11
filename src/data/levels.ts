@@ -169,6 +169,111 @@ export const LEVEL_8: LevelData = {
   goal: { x: 5, z: 5 },
 };
 
+/**
+ * 第9关：闸门 — 先踩机关开路，再到达终点
+ * 推演：Standing(1,1)→S→LyingZ(1,2)→E→LyingZ(2,2)→N→Standing(2,1) ✅ 踩机关！
+ *   →E→LyingX(3,1)→E→LyingX(4,1)→S→LyingX(4,2) 路障已开
+ *   →S→LyingX(4,3) 路障已开→S→LyingX(4,4)→S→LyingX(4,5)
+ *   →E→Standing(5,5) ✅ 约10步
+ */
+export const LEVEL_9: LevelData = {
+  id: '9',
+  name: '闸门',
+  width: 7,
+  height: 7,
+  floorMap: [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 2, 1, 1, 1, 0],  // (2,1)=机关
+    [0, 1, 1, 1, 3, 1, 0],  // (4,2)=路障
+    [0, 1, 1, 1, 3, 1, 0],  // (4,3)=路障
+    [0, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+  ],
+  start: { x: 1, z: 1 },
+  startOrientation: Orientation.Standing,
+  goal: { x: 5, z: 5 },
+  switches: [
+    {
+      cell: { x: 2, z: 1 },
+      barriers: [{ x: 4, z: 2 }, { x: 4, z: 3 }],
+    },
+  ],
+};
+
+/**
+ * 第10关：双闸 — 两个机关分别控制两组路障
+ * 推演：
+ *   先踩机关A(2,2)：Standing(1,1)→E→LyingX(2,1)→E→LyingX(3,1)→S→LyingX(3,2)→W→Standing(2,2) ✅
+ *   再踩机关B(6,2)：E→LyingX(3,2)→E→LyingX(4,2) 路障A已开→E→LyingX(5,2)
+ *   →S→LyingX(5,3)→E→LyingX(6,3)→N→Standing(6,2) ✅ 踩机关B！
+ *   路障B(4,5)消失→S→LyingZ(6,3)→E→LyingZ(7,3)→S→Standing(7,4) ✅ 约17步
+ */
+export const LEVEL_10: LevelData = {
+  id: '10',
+  name: '双闸',
+  width: 9,
+  height: 7,
+  floorMap: [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 3, 1, 1, 1, 0],  // (4,1)=路障A
+    [0, 1, 2, 1, 3, 1, 2, 1, 0],  // (2,2)=机关A, (4,2)=路障A, (6,2)=机关B
+    [0, 1, 1, 1, 3, 1, 1, 1, 0],  // (4,3)=路障A
+    [0, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 1, 1, 3, 1, 1, 1, 0],  // (4,5)=路障B
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ],
+  start: { x: 1, z: 1 },
+  startOrientation: Orientation.Standing,
+  goal: { x: 7, z: 4 },
+  switches: [
+    {
+      cell: { x: 2, z: 2 },
+      barriers: [{ x: 4, z: 1 }, { x: 4, z: 2 }, { x: 4, z: 3 }],
+    },
+    {
+      cell: { x: 6, z: 2 },
+      barriers: [{ x: 4, z: 5 }],
+    },
+  ],
+};
+
+/**
+ * 第11关：回廊开路 — 踩机关打通中路捷径
+ * 中路初始被路障封堵，需先踩机关A(3,3)移除路障(4,1)，
+ * 再踩机关B(3,5)移除路障(4,7)，打通中路纵穿通道
+ */
+export const LEVEL_11: LevelData = {
+  id: '11',
+  name: '回廊开路',
+  width: 9,
+  height: 9,
+  floorMap: [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 3, 1, 1, 1, 0],  // (4,1)=路障A
+    [0, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 1, 2, 1, 1, 1, 1, 0],  // (3,3)=机关A
+    [0, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 1, 2, 1, 1, 1, 1, 0],  // (3,5)=机关B
+    [0, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 1, 1, 3, 1, 1, 1, 0],  // (4,7)=路障B
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ],
+  start: { x: 1, z: 1 },
+  startOrientation: Orientation.Standing,
+  goal: { x: 7, z: 6 },
+  switches: [
+    {
+      cell: { x: 3, z: 3 },
+      barriers: [{ x: 4, z: 1 }],
+    },
+    {
+      cell: { x: 3, z: 5 },
+      barriers: [{ x: 4, z: 7 }],
+    },
+  ],
+};
+
 export const LEVELS: LevelData[] = [
   LEVEL_1,
   LEVEL_2,
@@ -178,4 +283,7 @@ export const LEVELS: LevelData[] = [
   LEVEL_6,
   LEVEL_7,
   LEVEL_8,
+  LEVEL_9,
+  LEVEL_10,
+  LEVEL_11,
 ];
