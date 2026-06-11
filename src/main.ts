@@ -33,6 +33,7 @@ const engine = new GameEngine(LEVELS[currentLevelIndex], {
   onReset() {
     hud.updateMoveCount(0);
     hud.hideWin();
+    gameView.loadLevel(engine.grid, engine.level);
     gameView.snapToState(engine.block.state);
   },
   onLevelLoad(level: LevelData) {
