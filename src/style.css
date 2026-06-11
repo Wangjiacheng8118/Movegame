@@ -136,3 +136,21 @@ html, body {
 @media (hover: hover) and (pointer: fine) {
   .dpad { display: none; }
 }
+
+/* === 滑动方向指示器 === */
+.swipe-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+  z-index: 50;
+  animation: swipe-fade 300ms ease-out forwards;
+}
+
+@keyframes swipe-fade {
+  0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+}

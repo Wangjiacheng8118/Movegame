@@ -11,6 +11,7 @@ export class TouchInput {
   private startY = 0;
   private minSwipeDist = 50;
   private isDetectMobile: boolean;
+  private directionIndicator: HTMLElement | null = null;
 
   constructor(target: HTMLElement, onDirection: (dir: Direction) => void) {
     this.isDetectMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -34,6 +35,7 @@ export class TouchInput {
       const dir = resolveSwipeDirection(dx, dy, this.minSwipeDist);
       if (dir) {
         onDirection(dir);
+        this.showDirectionIndicator(dir);
       }
       e.preventDefault();
     }, { passive: false });
@@ -42,6 +44,35 @@ export class TouchInput {
     if (this.isDetectMobile) {
       this.createDpad(onDirection);
     }
+  }
+
+  /** 显示滑动方向指示器 */
+  private showDirectionIndicator(dir: Direction): void {
+    // 移除旧的指示器
+    if (this.directionIndicator) {
+      this.directionIndicator.remove();
+    }
+
+    const arrowMap: Record<Direction, string> = {
+      [Direction.North]: '↗',
+      [Direction.South]: '↙',
+      [Direction.East]: '↘',
+      [Direction.West]: '↖',
+    };
+
+    const indicator = document.createElement('div');
+    indicator.className = 'swipe-indicator';
+    indicator.textContent = arrowMap[dir];
+    document.body.appendChild(indicator);
+    this.directionIndicator = indicator;
+
+    // 300ms后自动移除
+    setTimeout(() => {
+      indicator.remove();
+      if (this.directionIndicator === indicator) {
+        this.directionIndicator = null;
+      }
+    }, 300);
   }
 
   /** 创建菱形虚拟方向键（对齐等距网格方向） */
