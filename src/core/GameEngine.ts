@@ -1,8 +1,9 @@
 import { Direction, GameEvents, LevelData, TransitionResult } from './types';
 import { Block } from './Block';
 import { Grid } from './Grid';
+import { checkSwitchTrigger } from './SwitchState';
 
-/** 游戏引擎 — 连接物块状态、边界检测、通关判定 */
+/** 游戏引擎 — 连接物块状态、边界检测、机关触发、通关判定 */
 export class GameEngine {
   block: Block;
   grid: Grid;
@@ -45,6 +46,14 @@ export class GameEngine {
 
     this.events.onBlockMove(prev, this.block.state, result, dir);
 
+    // 机关触发检测：只有Standing状态能踩机关
+    if (this.block.isStanding()) {
+      const switchResult = checkSwitchTrigger(this.block.state.anchor, this.grid);
+      if (switchResult) {
+        this.events.onSwitchTriggered(switchResult.switchCell, switchResult.removedBarriers);
+      }
+    }
+
     // 通关检测
     if (this.checkWin()) {
       this.events.onLevelComplete();
@@ -64,6 +73,7 @@ export class GameEngine {
 
   /** 重置关卡 */
   reset(): void {
+    this.grid = new Grid(this.level);
     this.block = new Block({
       orientation: this.level.startOrientation,
       anchor: this.level.start,
