@@ -41,7 +41,7 @@ export interface LevelData {
   width: number;
   /** 地图高度（Z方向格子数） */
   height: number;
-  /** 二维数组：1=路径格子, 0=空 */
+  /** 二维数组：0=空, 1=地板, 2=机关格, 3=路障格 */
   floorMap: number[][];
   /** 起点位置 */
   start: Cell;
@@ -49,6 +49,8 @@ export interface LevelData {
   startOrientation: Orientation;
   /** 终点位置（需站立到达） */
   goal: Cell;
+  /** 机关列表（可选，向后兼容旧关卡） */
+  switches?: SwitchDef[];
 }
 
 /** 翻滚转换结果 */
@@ -67,6 +69,14 @@ export interface RollAnimation {
   direction: Direction;
 }
 
+/** 机关定义：物块站立压上去时触发，移除关联路障 */
+export interface SwitchDef {
+  /** 机关格子位置（必须在 floorMap 中标记为 2） */
+  cell: Cell;
+  /** 该机关控制的路障格子列表（必须在 floorMap 中标记为 3） */
+  barriers: Cell[];
+}
+
 /** 游戏引擎事件 */
 export interface GameEvents {
   onBlockMove: (prev: BlockState, next: BlockState, result: TransitionResult, dir: Direction) => void;
@@ -74,4 +84,5 @@ export interface GameEvents {
   onLevelComplete: () => void;
   onReset: () => void;
   onLevelLoad: (level: LevelData) => void;
+  onSwitchTriggered: (switchCell: Cell, removedBarriers: Cell[]) => void;
 }
