@@ -120,9 +120,14 @@ export class GameView {
     this.gridRenderer.removeBarrier(x, z);
   }
 
-  /** 机关标记变灰 */
-  removeSwitchMarker(x: number, z: number): void {
-    this.gridRenderer.removeSwitchMarker(x, z);
+  /** 恢复路障方块 */
+  addBarrier(x: number, z: number): void {
+    this.gridRenderer.addBarrier(x, z);
+  }
+
+  /** 切换机关标记视觉状态 */
+  setSwitchState(x: number, z: number, state: 'activated' | 'deactivated'): void {
+    this.gridRenderer.setSwitchState(x, z, state);
   }
 
   /** 播放翻滚动画 */

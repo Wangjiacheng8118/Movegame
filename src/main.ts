@@ -44,10 +44,17 @@ const engine = new GameEngine(LEVELS[currentLevelIndex], {
     gameView.loadLevel(engine.grid, level);
     gameView.snapToState(engine.block.state);
   },
-  onSwitchTriggered(switchCell, removedBarriers) {
-    gameView.removeSwitchMarker(switchCell.x, switchCell.z);
-    for (const b of removedBarriers) {
-      gameView.removeBarrier(b.x, b.z);
+  onSwitchToggled(switchCell, barriersAffected, newState) {
+    if (newState === 'open') {
+      gameView.setSwitchState(switchCell.x, switchCell.z, 'activated');
+      for (const b of barriersAffected) {
+        gameView.removeBarrier(b.x, b.z);
+      }
+    } else {
+      gameView.setSwitchState(switchCell.x, switchCell.z, 'deactivated');
+      for (const b of barriersAffected) {
+        gameView.addBarrier(b.x, b.z);
+      }
     }
   },
 });

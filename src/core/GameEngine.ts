@@ -1,7 +1,7 @@
 import { Direction, GameEvents, LevelData, TransitionResult } from './types';
 import { Block } from './Block';
 import { Grid } from './Grid';
-import { checkSwitchTrigger } from './SwitchState';
+import { checkSwitchToggle } from './SwitchState';
 
 /** 游戏引擎 — 连接物块状态、边界检测、机关触发、通关判定 */
 export class GameEngine {
@@ -46,11 +46,15 @@ export class GameEngine {
 
     this.events.onBlockMove(prev, this.block.state, result, dir);
 
-    // 机关触发检测：只有Standing状态能踩机关
+    // 机关触发检测：只有Standing状态能踩机关（切换模式）
     if (this.block.isStanding()) {
-      const switchResult = checkSwitchTrigger(this.block.state.anchor, this.grid);
+      const switchResult = checkSwitchToggle(this.block.state.anchor, this.grid);
       if (switchResult) {
-        this.events.onSwitchTriggered(switchResult.switchCell, switchResult.removedBarriers);
+        this.events.onSwitchToggled(
+          switchResult.switchCell,
+          switchResult.barriersAffected,
+          switchResult.newState
+        );
       }
     }
 

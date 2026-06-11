@@ -41,7 +41,7 @@ export class GridRenderer {
           }
         } else if (val === 3) {
           // 路障格：不可通行的障碍
-          this.addBarrier(x, z);
+          this.addBarrierInit(x, z);
         }
       }
     }
@@ -52,8 +52,8 @@ export class GridRenderer {
     this.addMarker(level.goal, 0xcc4444, 0.08);
   }
 
-  /** 添加路障方块 */
-  private addBarrier(x: number, z: number): void {
+  /** 添加路障方块（初始化时内部调用） */
+  private addBarrierInit(x: number, z: number): void {
     // 底层地板（路障移除后可见）
     const floorGeo = new THREE.BoxGeometry(0.95, 0.2, 0.95);
     const floorMat = new THREE.MeshStandardMaterial({ color: COLOR_FLOOR });
@@ -98,15 +98,37 @@ export class GridRenderer {
     }
   }
 
-  /** 移除机关标记（触发后变灰） */
-  removeSwitchMarker(x: number, z: number): void {
+  /** 恢复路障方块（机关切换为closed时调用） */
+  addBarrier(x: number, z: number): void {
+    const key = `${x},${z}`;
+    if (this.barrierMeshes.has(key)) return;
+
+    const barrierGeo = new THREE.BoxGeometry(0.85, 0.6, 0.85);
+    const barrierMat = new THREE.MeshStandardMaterial({
+      color: COLOR_BARRIER,
+      transparent: true,
+      opacity: 0.85,
+    });
+    const barrierMesh = new THREE.Mesh(barrierGeo, barrierMat);
+    barrierMesh.position.set(x + 0.5, 0.3, z + 0.5);
+    this.group.add(barrierMesh);
+    this.barrierMeshes.set(key, barrierMesh);
+  }
+
+  /** 切换机关标记视觉状态 */
+  setSwitchState(x: number, z: number, state: 'activated' | 'deactivated'): void {
     const key = `${x},${z}`;
     const mesh = this.switchMeshes.get(key);
-    if (mesh) {
-      (mesh.material as THREE.MeshStandardMaterial).color.setHex(0x888866);
-      (mesh.material as THREE.MeshStandardMaterial).opacity = 0.5;
-      (mesh.material as THREE.MeshStandardMaterial).transparent = true;
-      this.switchMeshes.delete(key);
+    if (!mesh) return;
+    const mat = mesh.material as THREE.MeshStandardMaterial;
+    if (state === 'activated') {
+      mat.color.setHex(0x44cc44);
+      mat.opacity = 1.0;
+      mat.transparent = false;
+    } else {
+      mat.color.setHex(COLOR_SWITCH);
+      mat.opacity = 1.0;
+      mat.transparent = false;
     }
   }
 
