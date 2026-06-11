@@ -115,6 +115,16 @@ export class GameView {
     this.blockRenderer.snapToState(state);
   }
 
+  /** 移除路障方块 */
+  removeBarrier(x: number, z: number): void {
+    this.gridRenderer.removeBarrier(x, z);
+  }
+
+  /** 机关标记变灰 */
+  removeSwitchMarker(x: number, z: number): void {
+    this.gridRenderer.removeSwitchMarker(x, z);
+  }
+
   /** 播放翻滚动画 */
   playRollAnimation(
     dir: Direction,

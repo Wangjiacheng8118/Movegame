@@ -43,6 +43,12 @@ const engine = new GameEngine(LEVELS[currentLevelIndex], {
     gameView.loadLevel(engine.grid, level);
     gameView.snapToState(engine.block.state);
   },
+  onSwitchTriggered(switchCell, removedBarriers) {
+    gameView.removeSwitchMarker(switchCell.x, switchCell.z);
+    for (const b of removedBarriers) {
+      gameView.removeBarrier(b.x, b.z);
+    }
+  },
 });
 
 // 渲染
