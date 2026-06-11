@@ -77,6 +77,16 @@ export interface SwitchDef {
   barriers: Cell[];
 }
 
+/** 机关切换结果 */
+export interface SwitchToggleResult {
+  /** 触发的机关位置 */
+  switchCell: Cell;
+  /** 受影响的路障格子列表 */
+  barriersAffected: Cell[];
+  /** 切换后的新状态：'open'=路障消失, 'closed'=路障恢复 */
+  newState: 'open' | 'closed';
+}
+
 /** 游戏引擎事件 */
 export interface GameEvents {
   onBlockMove: (prev: BlockState, next: BlockState, result: TransitionResult, dir: Direction) => void;
@@ -84,5 +94,5 @@ export interface GameEvents {
   onLevelComplete: () => void;
   onReset: () => void;
   onLevelLoad: (level: LevelData) => void;
-  onSwitchTriggered: (switchCell: Cell, removedBarriers: Cell[]) => void;
+  onSwitchToggled: (switchCell: Cell, barriersAffected: Cell[], newState: 'open' | 'closed') => void;
 }
