@@ -1,19 +1,19 @@
-import { Cell, SwitchDef } from './types';
+import { Cell, SwitchToggleResult } from './types';
 import { Grid } from './Grid';
 
 /**
- * 检测物块是否踩到机关并触发路障移除。
+ * 检测物块是否踩到机关并切换路障状态。
  * 仅当物块为 Standing 状态时触发机关。
+ * 切换模式：踩一次→打开路障，再踩→关闭路障，循环往复。
  *
- * @param anchor 物块锚点位置
+ * @param anchor 物块锚点位置（Standing时为唯一占格）
  * @param grid 当前网格
- * @returns 被触发机关及移除的路障列表，或 null 表示无触发
+ * @returns 切换结果，或 null 表示无触发
  */
-export function checkSwitchTrigger(
+export function checkSwitchToggle(
   anchor: Cell,
   grid: Grid
-): { switchCell: Cell; removedBarriers: Cell[] } | null {
-  // 只有Standing状态才触发，anchor就是唯一占格
+): SwitchToggleResult | null {
   if (!grid.isSwitch(anchor.x, anchor.z)) {
     return null;
   }
@@ -21,22 +21,29 @@ export function checkSwitchTrigger(
   const sw = grid.getSwitch(anchor.x, anchor.z);
   if (!sw) return null;
 
-  const removedBarriers: Cell[] = [];
+  const activated = grid.toggleSwitch(anchor.x, anchor.z);
+  if (activated === undefined) return null;
 
-  // 移除所有关联路障
+  const newState = activated ? 'open' : 'closed';
+  const barriersAffected: Cell[] = [];
+
   for (const barrier of sw.barriers) {
-    if (grid.removeBarrier(barrier.x, barrier.z)) {
-      removedBarriers.push(barrier);
+    if (newState === 'open') {
+      if (grid.removeBarrier(barrier.x, barrier.z)) {
+        barriersAffected.push(barrier);
+      }
+    } else {
+      if (grid.addBarrier(barrier.x, barrier.z)) {
+        barriersAffected.push(barrier);
+      }
     }
   }
 
-  // 移除机关标记（已触发，变为普通地板）
-  grid.removeSwitch(anchor.x, anchor.z);
-
-  if (removedBarriers.length === 0) return null;
+  if (barriersAffected.length === 0) return null;
 
   return {
     switchCell: anchor,
-    removedBarriers,
+    barriersAffected,
+    newState,
   };
 }
