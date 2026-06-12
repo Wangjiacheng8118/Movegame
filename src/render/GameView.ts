@@ -48,7 +48,7 @@ export class GameView {
     // 鼠标滚轮缩放（PC）
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
-      this.camera.zoom(e.deltaY > 0 ? 0.1 : -0.1);
+      this.camera.zoom(e.deltaY > 0 ? 0.05 : -0.05);
     }, { passive: false });
 
     // 双指捏合缩放（移动端）
@@ -68,7 +68,7 @@ export class GameView {
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.hypot(dx, dy);
         if (lastPinchDist > 0) {
-          const delta = (dist - lastPinchDist) * 0.005;
+          const delta = (dist - lastPinchDist) * 0.003;
           this.camera.zoom(-delta);
         }
         lastPinchDist = dist;

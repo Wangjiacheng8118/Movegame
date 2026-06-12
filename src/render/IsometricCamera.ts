@@ -4,9 +4,9 @@ import * as THREE from 'three';
 export class IsometricCamera {
   camera: THREE.OrthographicCamera;
   private baseFrustumSize = 8;
-  private zoomLevel = 1;
-  private minZoom = 0.5;  // 最大放大50%
-  private maxZoom = 1.5;  // 最小缩小50%
+  private zoomLevel = 2;       // 初始画面50%大小（视锥扩大到16）
+  private minZoom = 1.25;      // 画面最小80%（最大放大到80%大小）
+  private maxZoom = 2;         // 画面最大50%（初始就是最大缩小，视锥=16）
 
   constructor(viewportWidth: number, viewportHeight: number) {
     const aspect = viewportWidth / viewportHeight;
@@ -44,7 +44,7 @@ export class IsometricCamera {
 
   /** 重置缩放 */
   resetZoom(): void {
-    this.zoomLevel = 1;
+    this.zoomLevel = 2;
     this.updateFrustum();
   }
 
